@@ -1,50 +1,13 @@
-# online
+# Machine learning algorithms in Clojure
 
-FIXME: description
+## Description
 
-## Installation
+Repository for Clojure implementations of machine learning algorithms. Currently contains:
 
-Download from http://example.com/FIXME.
+- Online estimators for the sample mean and sample variance. From [[1]](#f1).
 
-## Usage
+Purely for learning, and not (yet) for use in actual applications.
 
-FIXME: explanation
+## References
 
-Run the project directly:
-
-    $ boot run
-
-Run the project's tests (they'll fail until you edit them):
-
-    $ boot test
-
-Build an uberjar from the project:
-
-    $ boot build
-
-Run the uberjar:
-
-    $ java -jar target/online-0.1.0-SNAPSHOT-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2018 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+<span id=f1>[1]</b> https://econtent.hogrefe.com/doi/abs/10.1027/1614-2241/a000116
