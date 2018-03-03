@@ -1,53 +1,38 @@
 (ns ml.graphical.max-sum)
 
 
+(defn map-key
+  [f coll]
+  (zipmap coll (map f coll)))
+
+
 (defn viterbi
   [{:keys [states p-emit p-trans p-init] :as model} ys]
   (let [cache (atom {})]
-    (letfn [(joint-p [t current]
+    (letfn [(backtrack [trace [t x] acc]
+              (if (neg? t)
+                acc
+                (recur trace [(dec t) (first (get trace [t x]))] (cons x acc))))
+
+            (joint-p [t current]
               (when-not (get @cache [t current])
                 (swap!
                   cache
                   #(assoc % [t current]
                           (if (= t 0)
-                            (* (p-emit current (nth ys 0))
-                               (p-init current))
+                            [:start (* (p-emit current (nth ys 0))
+                                       (p-init current))]
                             (->> states
-                                 (map (fn [previous]
-                                        (* (p-emit current (nth ys t))
-                                           (p-trans previous current)
-                                           (joint-p (dec t) previous))))
-                                 (apply max))))))
-              (get @cache [t current]))]
+                                 (map-key
+                                   (fn [previous]
+                                     (* (p-emit current (nth ys t))
+                                        (p-trans previous current)
+                                        (joint-p (dec t) previous))))
+                                 (apply max-key val))))))
+              (second (get @cache [t current])))]
 
-      (let [t-max (dec (count ys))]
-        (->> states
-             (map (partial joint-p t-max))
-             (apply max))))))
-
-
-(def wikipedia-model
-  {:states ["H" "F"]
-   :p-emit (fn [x y]
-             (case [x y]
-               ["H" "D"] 0.1
-               ["H" "C"] 0.4
-               ["H" "N"] 0.5
-               ["F" "D"] 0.6
-               ["F" "C"] 0.3
-               ["F" "N"] 0.1))
-   :p-trans (fn [x1 x2]
-              (case [x1 x2]
-                ["H" "H"] 0.7
-                ["H" "F"] 0.3
-                ["F" "H"] 0.4
-                ["F" "F"] 0.6))
-   :p-init (fn p-init [x]
-             (case x
-               "H" 0.6
-               "F" 0.4))})
-
-
-(def ys (apply concat (repeat 10 ["N" "C" "D"])))
-
-(viterbi wikipedia-model ys)
+      (let [t-max (dec (count ys))
+            r (->> states
+                   (map-key (partial joint-p t-max))
+                   (apply max-key val))]
+        [(backtrack @cache [t-max (first r)] []) (second r)]))))

@@ -4,7 +4,8 @@
 (set-env! :resource-paths #{"src"}
           :source-paths   #{"test"}
           :dependencies   '[[org.clojure/clojure "1.9.0"]
-                            [adzerk/boot-test "RELEASE" :scope "test"]])
+                            [adzerk/boot-test "RELEASE" :scope "test"]
+                            [same/ish "0.1.0"]])
 
 (task-options!
  pom {:project     project
