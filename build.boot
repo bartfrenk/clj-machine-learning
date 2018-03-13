@@ -5,7 +5,8 @@
           :source-paths   #{"test"}
           :dependencies   '[[org.clojure/clojure "1.9.0"]
                             [adzerk/boot-test "RELEASE" :scope "test"]
-                            [same/ish "0.1.0"]])
+                            [same/ish "0.1.0"]
+                            [incanter "1.5.7"]])
 
 (task-options!
  pom {:project     project
