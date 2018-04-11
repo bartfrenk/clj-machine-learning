@@ -5,8 +5,11 @@
           :source-paths   #{"test"}
           :dependencies   '[[org.clojure/clojure "1.9.0"]
                             [adzerk/boot-test "RELEASE" :scope "test"]
+                            [kixi/stats "0.4.0"]
                             [same/ish "0.1.0"]
-                            [incanter "1.5.7"]])
+                            [incanter "1.5.7"]
+                            [net.mikera/core.matrix "0.62.0"]
+                            [net.mikera/vectorz-clj "0.47.0"]])
 
 (task-options!
  pom {:project     project

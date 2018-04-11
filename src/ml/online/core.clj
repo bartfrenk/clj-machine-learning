@@ -1,5 +1,20 @@
 (ns ml.online.core
-  (:gen-class))
+  (:gen-class)
+  (:require [clojure.core.matrix :as m]
+            [clojure.core.matrix.protocols :as mp]
+            [kixi.stats.distribution :as d]
+            [incanter.charts :as c]
+            [incanter.core :as i])
+  (:import [java.util Random]))
+
+
+
+
+(m/set-current-implementation :vectorz)
+
+(def m (m/matrix [[1 2 3] [4 5 6] [7 8 9]]))
+
+(m/mmul m m)
 
 
 (defn sample-mean
@@ -59,3 +74,30 @@
                next (f current input)]
            (vreset! state next)
            (xf result (g next))))))))
+
+
+(defn linear-regression
+  "Bayesian linear regression with Gaussian prior on the weights.
+  Updates are a pair of predictors and targets, where the predictors are given
+  as the rows of a matrix of size m x n, and the target as a matrix of size 1 x m."
+  [beta {:keys [mu cov] :as prior}]
+  (fn
+    [xf]
+    (let [state (volatile! prior)]
+      (fn
+        ([] (xf))
+        ([result] (xf result))
+        ([result [predictors targets]]
+         (let [{m0 :mu S0 :cov} @state
+               predictors-t (m/transpose predictors)
+               S0-inv (m/inverse S0)
+               SN-inv (m/add S0-inv
+                             (m/mmul predictors-t
+                                     predictors
+                                     beta))
+               SN (m/inverse SN-inv)
+               mN (m/mmul SN
+                          (m/add (m/mmul S0-inv m0)
+                                 (m/mmul beta predictors-t targets)))]
+           (vreset! state {:mu mN :cov SN})
+           (xf result [mN SN])))))))
