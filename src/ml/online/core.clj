@@ -8,8 +8,6 @@
   (:import [java.util Random]))
 
 
-
-
 (m/set-current-implementation :vectorz)
 
 (def m (m/matrix [[1 2 3] [4 5 6] [7 8 9]]))
